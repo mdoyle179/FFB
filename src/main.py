@@ -3,8 +3,8 @@ import json
 import pandas as pd
 
 
-# Parses the data
-def parseData(fileName):
+# Converts the file to an array of lines
+def getLines(fileName):
     with open(fileName) as f:
         lines = f.readlines()
     return lines
@@ -13,6 +13,12 @@ def printData(lines):
     for line in lines:
         print(line)
         
+def parseData(line):
+    parts = line.split("::")
+    for part in parts:
+        print(part)
+    
+    
 exec(open("..\config\TwitterTokens.py").read())
 
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
@@ -36,5 +42,8 @@ for user in tweepy.Cursor(api.search_users, q='#fantasyfootball').items(10):
 
 outputFile.close()
 
-week9data = parseData("..\config\week9.dat")
-printData(week9data)
+week9data = getLines("..\config\week9.dat")
+
+for line in week9data:
+    parsedLine = parseData(line)
+#printData(week9data)
