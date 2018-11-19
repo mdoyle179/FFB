@@ -1,7 +1,10 @@
 import tweepy
 import json
 import pandas as pd
-
+import player as player
+import game as game
+#import folder.file as myModule
+#k = myModule.Klasa()
 # Converts the file to an array of lines
 def getLines(fileName):
     with open(fileName) as f:
@@ -14,16 +17,9 @@ def printData(lines):
         
 def parseData(line):
     parts = line.split("::")
+    game1 = game.Game(parts[1], parts[2], parts[3], "placeholder")
     for part in parts:
         print(part)
-
-def setupAuth():
-    exec(open("..\config\TwitterTokens.py").read())
-    
-    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-    auth.set_access_token(access_token, access_token_secret)
-    
-    return tweepy.API(auth, wait_on_rate_limit = True)
 
 def readTweets():
     # get all the users
@@ -35,8 +31,17 @@ def readTweets():
         formatted = '{}::::{}::::{}::::{}::::{}\n'.format(user.name, user.id, tweet.created_at, tweet.retweet_count, tweetText)
         outputFile.write(formatted)
 
+def createPlayer(lineFromFile):
+    player = {}
+    player.Name = lineFromFile
 
-api = setupAuth()
+
+# setup the authorization
+exec(open("..\config\TwitterTokens.py").read())
+
+auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+auth.set_access_token(access_token, access_token_secret)
+api = tweepy.API(auth, wait_on_rate_limit = True)
 
 # create output file
 outputFile = open("ffb_output.txt", "w", encoding="utf-8")
@@ -46,6 +51,7 @@ outputFile.close()
 statsFile = open("..\config\week9.dat", "r", encoding="utf-8") 
 week9data = getLines("..\config\week9.dat")
 
+players = []
 #parse the data
 for line in week9data:
     parsedLine = parseData(line)
