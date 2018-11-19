@@ -17,9 +17,12 @@ def printData(lines):
         
 def parseData(line):
     parts = line.split("::")
-    game1 = game.Game(parts[1], parts[2], parts[3], "placeholder")
-    for part in parts:
-        print(part)
+    week9game = game.Game(parts[1], parts[2], parts[3], "placeholder")
+    player1 = player.Player(parts[0], week9game)
+    print(player1.name)
+    print(player1.games.points)
+#    for part in parts:
+#        print(part)
 
 def readTweets():
     # get all the users
