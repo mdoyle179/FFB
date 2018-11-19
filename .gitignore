@@ -105,3 +105,6 @@ venv.bak/
 
 #config
 config/TwitterTokens.py
+
+#output
+output/
