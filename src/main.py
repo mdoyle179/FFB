@@ -26,6 +26,15 @@ def readTweets(player1):
         formatted = '{}::::{}::::{}::::{}\n'.format(tweet.created_at, tweet.retweet_count, tweetText, tweet.id)
         outputFile.write(formatted)
 
+def getExpertsTweets(username):
+#    for user in tweepy.Cursor(api.search_users, q='villanova').items(50):
+#    ffbUser = api.get_user(username)
+    tweets = api.user_timeline(username)
+        # get one of the users tweets
+    tweet = tweets[0]
+    tweetText = tweet.text.replace('\n','')
+    print("{} {}\n".format(username, tweetText))
+
 # setup the authorization
 exec(open("..\config\TwitterTokens.py").read())
 
@@ -44,7 +53,8 @@ week9data = getLines("..\config\week9.dat")
 ffbExperts = getLines(r"..\config\users.dat")
 
 for expert in ffbExperts:
-    print(expert)
+#    print(expert)
+    getExpertsTweets(expert)
     
 players = []
 # parse the data
