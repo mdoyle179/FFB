@@ -21,11 +21,9 @@ def parseData(line):
     return player1
 
 def readTweets(player1):
-
     for tweet in tweepy.Cursor(api.search, q=player1.name).items(10):
         tweetText = tweet.text.replace('\n','')
-#        print(tweetText)
-        formatted = '{}::::{}::::{}\n'.format(tweet.created_at, tweet.retweet_count, tweetText)
+        formatted = '{}::::{}::::{}::::{}\n'.format(tweet.created_at, tweet.retweet_count, tweetText, tweet.id)
         outputFile.write(formatted)
 
 # setup the authorization
@@ -39,9 +37,15 @@ api = tweepy.API(auth, wait_on_rate_limit = True)
 outputFile = open("..\output\week9_tweets.txt", "w", encoding="utf-8")
 
 # read in the stats
-statsFile = open("..\config\week9.dat", "r", encoding="utf-8") 
+#statsFile = open("..\config\week9.dat", "r", encoding="utf-8") 
 week9data = getLines("..\config\week9.dat")
 
+# get the list of fantasy football experts
+ffbExperts = getLines(r"..\config\users.dat")
+
+for expert in ffbExperts:
+    print(expert)
+    
 players = []
 # parse the data
 for line in week9data:
