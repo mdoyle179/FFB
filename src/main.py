@@ -3,6 +3,7 @@ import json
 import pandas as pd
 import player as player
 import game as game
+import fantasyExpert as fantasyExpert
 
 # Converts the file to an array of lines
 def getLines(fileName):
@@ -29,11 +30,17 @@ def readTweets(player1):
 def getExpertsTweets(username):
 #    for user in tweepy.Cursor(api.search_users, q='villanova').items(50):
 #    ffbUser = api.get_user(username)
-    tweets = api.user_timeline(username)
-        # get one of the users tweets
-    tweet = tweets[0]
-    tweetText = tweet.text.replace('\n','')
-    print("{} {}\n".format(username, tweetText))
+    sinceId = 1059166842206355456 # tweet on nov 4 at 11:33am
+    maxId = 1060954187406565376 # tweet on nov 9 at 9:56am
+    tweets = api.user_timeline(username, since_id=sinceId, max_id=maxId, count=200)
+    # get one of the users tweets
+    if tweets:
+        for tweet in tweets:
+            tweetText = tweet.text.replace('\n','')
+            formatted = "{} {} {}\n".format(username, tweetText, tweet.created_at)
+            outputFile.write(formatted)
+            
+    return tweets
 
 # setup the authorization
 exec(open("..\config\TwitterTokens.py").read())
@@ -46,22 +53,22 @@ api = tweepy.API(auth, wait_on_rate_limit = True)
 outputFile = open("..\output\week9_tweets.txt", "w", encoding="utf-8")
 
 # read in the stats
-#statsFile = open("..\config\week9.dat", "r", encoding="utf-8") 
 week9data = getLines("..\config\week9.dat")
 
 # get the list of fantasy football experts
 ffbExperts = getLines(r"..\config\users.dat")
 
+experts = []
 for expert in ffbExperts:
-#    print(expert)
-    getExpertsTweets(expert)
+    tweets = getExpertsTweets(expert)
+    expert1 = fantasyExpert.FantasyExpert(expert, tweets)
+    experts.append(expert1)
     
 players = []
 # parse the data
 for line in week9data:
     player1 = parseData(line)
     players.append(player1)
-    readTweets(player1)
+#    readTweets(player1)
     
-#printData(players)
 outputFile.close()
