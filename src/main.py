@@ -9,14 +9,16 @@ def getLines(fileName):
         lines = f.readlines()
     return lines
 
-def printData(players):
+def printPlayers():
     for player1 in players:
-        print(player1.name + " " + str(player1.games.points))
+        print(player1.name + " " + str(player1.games.points) + " " + player1.nickname)
         
 def parseData(line):
     parts = line.split("::")
     week9game = game.Game(parts[1], parts[2], parts[3], "placeholder")
-    player1 = player.Player(parts[0], week9game)
+
+    player1 = player.Player(parts[0], parts[4], week9game)        
+    
     return player1
 
 def readTweets(player1):
@@ -28,8 +30,11 @@ def readTweets(player1):
 def associateTweetsWithPlayer(tweets):
     for player1 in players:
         for tweet in tweets:
-            if player1.name in tweet.text:
-                print("{}:: {}\n".format(player1.name, tweet.text))
+            if player1.name in tweet.text: # or player1.nickname in tweet.text:
+                print("{}::{} {}\n".format(player1.name, player1.nickname, tweet.text))
+                player1.numOfTweets = player1.numOfTweets + 1
+            elif player1.nickname != "" and player1.nickname in tweet.text:
+                print("Nickname {}::{} {}\n".format(player1.name, player1.nickname, tweet.text))
                 player1.numOfTweets = player1.numOfTweets + 1
 
 def getExpertsTweets(username):
