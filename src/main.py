@@ -1,6 +1,4 @@
 import tweepy
-import json
-import pandas as pd
 import player as player
 import game as game
 import fantasyExpert as fantasyExpert
@@ -26,6 +24,13 @@ def readTweets(player1):
         tweetText = tweet.text.replace('\n','')
         formatted = '{}::::{}::::{}::::{}\n'.format(tweet.created_at, tweet.retweet_count, tweetText, tweet.id)
         outputFile.write(formatted)
+        
+def associateTweetsWithPlayer(tweets):
+    for player1 in players:
+        for tweet in tweets:
+            if player1.name in tweet.text:
+                print("{}:: {}\n".format(player1.name, tweet.text))
+                player1.numOfTweets = player1.numOfTweets + 1
 
 def getExpertsTweets(username):
 #    for user in tweepy.Cursor(api.search_users, q='villanova').items(50):
@@ -41,6 +46,9 @@ def getExpertsTweets(username):
             outputFile.write(formatted)
             
     return tweets
+
+players = []
+experts = []
 
 # setup the authorization
 exec(open("..\config\TwitterTokens.py").read())
@@ -58,17 +66,17 @@ week9data = getLines("..\config\week9.dat")
 # get the list of fantasy football experts
 ffbExperts = getLines(r"..\config\users.dat")
 
-experts = []
-for expert in ffbExperts:
-    tweets = getExpertsTweets(expert)
-    expert1 = fantasyExpert.FantasyExpert(expert, tweets)
-    experts.append(expert1)
-    
-players = []
 # parse the data
 for line in week9data:
     player1 = parseData(line)
     players.append(player1)
 #    readTweets(player1)
+
+for expert in ffbExperts:
+    tweets = getExpertsTweets(expert)
+    expert1 = fantasyExpert.FantasyExpert(expert, tweets)
+    associateTweetsWithPlayer(tweets)
+    experts.append(expert1)
+
     
 outputFile.close()
