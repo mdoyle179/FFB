@@ -3,4 +3,3 @@ class Player:
         self.name = name
         self.games = games
         self.nickname = nickname
-        self.numOfTweets = 0
