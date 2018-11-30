@@ -11,7 +11,8 @@ def getLines(fileName):
 
 def printPlayers():
     for player1 in players:
-        print(player1.name + " " + str(player1.games.points) + " " + player1.nickname)
+        formatted = "{}  {}  {}\n".format(player1.name, player1.games.points, player1.numOfTweets)
+        print(formatted)
         
 def parseData(line):
     parts = line.split("::")
@@ -31,10 +32,10 @@ def associateTweetsWithPlayer(tweets):
     for player1 in players:
         for tweet in tweets:
             if player1.name in tweet.text: # or player1.nickname in tweet.text:
-                print("{}::{} {}\n".format(player1.name, player1.nickname, tweet.text))
+#                print("{}::{} {}\n".format(player1.name, player1.nickname, tweet.text))
                 player1.numOfTweets = player1.numOfTweets + 1
             elif player1.nickname != "" and player1.nickname in tweet.text:
-                print("Nickname {}::{} {}\n".format(player1.name, player1.nickname, tweet.text))
+#                print("Nickname {}::{} {}\n".format(player1.name, player1.nickname, tweet.text))
                 player1.numOfTweets = player1.numOfTweets + 1
 
 def getExpertsTweets(username):
@@ -42,14 +43,19 @@ def getExpertsTweets(username):
 #    ffbUser = api.get_user(username)
     sinceId = 1059166842206355456 # tweet on nov 4 at 11:33am
     maxId = 1060954187406565376 # tweet on nov 9 at 9:56am
-    tweets = api.user_timeline(username, since_id=sinceId, max_id=maxId, count=200)
-    # get one of the users tweets
-    if tweets:
-        for tweet in tweets:
-            tweetText = tweet.text.replace('\n','')
-            formatted = "{} {} {}\n".format(username, tweetText, tweet.created_at)
-            outputFile.write(formatted)
-            
+    tweets = []
+    try:
+        tweets = api.user_timeline(username, since_id=sinceId, max_id=maxId, count=200)
+        # get one of the users tweets
+        if tweets:
+            for tweet in tweets:
+                tweetText = tweet.text.replace('\n','')
+                formatted = "{} {} {}\n".format(username, tweetText, tweet.created_at)
+                outputFile.write(formatted)
+                
+    except:
+        print("Username {} was not found".format(username))
+        
     return tweets
 
 players = []
@@ -85,3 +91,5 @@ for expert in ffbExperts:
 
     
 outputFile.close()
+
+printPlayers()
