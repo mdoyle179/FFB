@@ -11,7 +11,7 @@ def getLines(fileName):
 
 def printPlayers():
     for player1 in players:
-        formatted = "{}  {}  {}\n".format(player1.name, player1.games.points, player1.numOfTweets)
+        formatted = "{}  {}  {}".format(player1.name, player1.games.points, player1.numOfTweets)
         print(formatted)
         
 def parseData(line):
