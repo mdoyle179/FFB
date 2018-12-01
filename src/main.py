@@ -5,8 +5,8 @@ import fantasyExpert as fantasyExpert
 import matplotlib.pyplot as plt
 from operator import attrgetter
 
+# Creates a scatterplot
 def createPlot(players):
-        
     sortedList = sorted(players, key=attrgetter('games.points'))
     x = []
     y = []
@@ -35,7 +35,8 @@ def printPlayers():
     for player1 in players:
         formatted = "{}  {}  {}".format(player1.name, player1.games.points, player1.games.numOfTweets)
         print(formatted)
-        
+
+# Parses the data and creates the Game and Player objects        
 def parseData(line):
     parts = line.split("::")
     week9game = game.Game(float(parts[1]), parts[2], parts[3])
@@ -43,12 +44,6 @@ def parseData(line):
     player1 = player.Player(parts[0], parts[4], week9game)        
     
     return player1
-
-def readTweets(player1):
-    for tweet in tweepy.Cursor(api.search, q=player1.name).items(10):
-        tweetText = tweet.text.replace('\n','')
-        formatted = '{}::::{}::::{}::::{}\n'.format(tweet.created_at, tweet.retweet_count, tweetText, tweet.id)
-        outputFile.write(formatted)
         
 def associateTweetsWithPlayer(tweets):
     for player1 in players:
@@ -65,7 +60,6 @@ def getExpertsTweets(username):
     tweets = []
     try:
         tweets = api.user_timeline(username, since_id=sinceId, max_id=maxId, count=200)
-        # get one of the users tweets
         if tweets:
             for tweet in tweets:
                 tweetText = tweet.text.replace('\n','')
@@ -77,6 +71,7 @@ def getExpertsTweets(username):
         
     return tweets
 
+# Main part of the program where execution begins
 players = []
 experts = []
 
@@ -96,21 +91,20 @@ week9data = getLines("..\config\week9.dat")
 # get the list of fantasy football experts
 ffbExperts = getLines(r"..\config\users.dat")
 
-# parse the data
+# parse the data from week9
 for line in week9data:
     player1 = parseData(line)
     players.append(player1)
-#    readTweets(player1)
 
+# get the tweets from the experts and associate them with a player
 for expert in ffbExperts:
     tweets = getExpertsTweets(expert)
     expert1 = fantasyExpert.FantasyExpert(expert, tweets)
     associateTweetsWithPlayer(tweets)
     experts.append(expert1)
-
     
 outputFile.close()
 
-printPlayers()
+#printPlayers()
 
 createPlot(players)
