@@ -32,8 +32,12 @@ def getLines(fileName):
     return lines
 
 def printPlayers():
-    for player1 in players:
-        formatted = "{}  {}  {}".format(player1.name, player1.games.points, player1.games.numOfTweets)
+    tableTitle = "{:^20}  {:^20}  {:^10}".format("Player Name", "Points", "Tweets")
+    print(tableTitle)
+
+    sortedList = sorted(players, key=attrgetter('games.points'))
+    for player1 in sortedList:
+        formatted = "{:^20}  {:^20}  {:^10}".format(player1.name, player1.games.points, player1.games.numOfTweets)
         print(formatted)
 
 # Parses the data and creates the Game and Player objects        
@@ -105,6 +109,6 @@ for expert in ffbExperts:
     
 outputFile.close()
 
-#printPlayers()
+printPlayers()
 
 createPlot(players)
