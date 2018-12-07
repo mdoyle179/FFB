@@ -3,8 +3,8 @@ Analyzes the correlation between the amount of points a player gets in fantasy f
 
 To be able to use this repository, you need to have a Twitter account, and have a developer account. You also need to create a file called TwitterTokens.py in the config directory. 
 
-The file should look like this:
-access_token = "<your_access_token>"
-access_token_secret = "<your_access_token_secret>"
-consumer_key = "<your_consumer_key>"
-consumer_secret = "<your_consumer_secret>"
+TwitterTokens.py should look like this:  
+access_token = "<your_access_token>"  
+access_token_secret = "<your_access_token_secret>"  
+consumer_key = "<your_consumer_key>"  
+consumer_secret = "<your_consumer_secret>"  
