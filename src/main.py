@@ -10,9 +10,7 @@ def createPlot(players):
     sortedList = sorted(players, key=attrgetter('games.points'))
     x = []
     y = []
-#    print('\n\nafter sorting list')
     for player1 in sortedList:
-#        print('{} {} {}'.format(player1.name, player1.games.points, player1.games.numOfTweets))
         x.append(player1.games.points)
         y.append(player1.games.numOfTweets)
     
@@ -58,9 +56,12 @@ def associateTweetsWithPlayer(tweets):
                 player1.games.numOfTweets = player1.games.numOfTweets + 1
 
 def getExpertsTweets(username):
+    # these are hardcoded to dates for week 9
     sinceId = 1059166842206355456 # tweet on nov 4 at 11:33am
     maxId = 1059809473622171649 # tweet on nov 6 at 6:07am
-            
+    
+    # create output file
+    outputFile = open("..\output\week9_tweets.txt", "w", encoding="utf-8")
     tweets = []
     try:
         tweets = api.user_timeline(username, since_id=sinceId, max_id=maxId, count=200)
@@ -72,7 +73,8 @@ def getExpertsTweets(username):
                 
     except:
         print("Username {} was not found".format(username))
-        
+    
+    outputFile.close()
     return tweets
 
 # Main part of the program where execution begins
@@ -85,9 +87,6 @@ exec(open("..\config\TwitterTokens.py").read())
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth, wait_on_rate_limit = True)
-
-# create output file
-outputFile = open("..\output\week9_tweets.txt", "w", encoding="utf-8")
 
 # read in the stats
 week9data = getLines("..\config\week9.dat")
@@ -106,8 +105,6 @@ for expert in ffbExperts:
     expert1 = fantasyExpert.FantasyExpert(expert, tweets)
     associateTweetsWithPlayer(tweets)
     experts.append(expert1)
-    
-outputFile.close()
 
 printPlayers()
 
